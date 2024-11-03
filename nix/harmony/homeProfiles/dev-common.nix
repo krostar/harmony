@@ -7,7 +7,11 @@
     direnv.enable = true;
     git = {
       enable = true;
-      ignores = [".idea/"];
+      ignores = [
+        ".idea/"
+        ".zed/"
+        ".idea/"
+      ];
     };
     ssh = {
       matchBlocks = {
