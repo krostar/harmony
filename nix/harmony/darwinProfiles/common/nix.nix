@@ -15,7 +15,6 @@
 
     settings = {
       system-features = ["apple-virt" "benchmark" "big-parallel" "kvm" "nixos-test"];
-      auto-optimise-store = true;
     };
 
     distributedBuilds = true;
