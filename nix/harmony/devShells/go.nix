@@ -1,12 +1,12 @@
 {
   pkgs,
-  self,
+  data,
   units,
   ...
 }: let
   nixagoFiles = units.harmony.lib.nixago.makeAll {
     inherit pkgs;
-    configs = builtins.attrValues self.nixago;
+    configs = [(units.harmony.lib.nixago.files.editorconfig data.dev.editorconfig pkgs)];
     log = false;
   };
 in
@@ -18,13 +18,14 @@ in
       (with units.harmony.packages; [
         editorconfig-checker
         lint-ghaction
+        lint-go
         lint-nix
         lint-sh
         lint-yaml
         treefmt
       ])
       ++ (with pkgs; [
-        alejandra
+        go_1_23
         nix-diff
         nix-tree
       ]);

@@ -67,16 +67,27 @@
         synergy = {
           mkPkgsForSystem = system: nixpkgs-stable.legacyPackages.${system};
 
-          export.packages = cfg: (builtins.mapAttrs (
-              system: units: (synergy.lib.attrsets.liftChildren "-" (builtins.mapAttrs (
-                  _: packages: (lib.attrsets.filterAttrs (
-                      name: _: !(lib.strings.hasSuffix "linux" system && name == "lorri-notifier")
-                    )
-                    packages)
-                )
-                units))
-            )
-            cfg);
+          export = {
+            # TODO: expose some easier-to-read way of doing this
+            # choose a default shell
+            # skip packages for some systems
+            devShells = cfg: (builtins.mapAttrs (
+                system: units:
+                  {inherit (cfg.${system}.repo) default;}
+                  // synergy.lib.attrsets.liftChildren "-" units
+              )
+              cfg);
+            packages = cfg: (builtins.mapAttrs (
+                system: units: (synergy.lib.attrsets.liftChildren "-" (builtins.mapAttrs (
+                    _: packages: (lib.attrsets.filterAttrs (
+                        name: _: !(lib.strings.hasSuffix "linux" system && name == "lorri-notifier")
+                      )
+                      packages)
+                  )
+                  units))
+              )
+              cfg);
+          };
         };
       };
     };
