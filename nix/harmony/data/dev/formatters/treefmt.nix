@@ -2,17 +2,20 @@
   pkgs,
   flake,
   ...
-}: let
-  pkgsUnstable = flake.inputs.nixpkgs-unstable.legacyPackages;
-in {
-  "${pkgs.system}" = {
-    package = pkgsUnstable.${pkgs.system}.treefmt;
+}: {
+  "${pkgs.system}" = let
+    pkgsUnstable = flake.inputs.nixpkgs-unstable.legacyPackages.${pkgs.system};
+  in {
+    package = pkgsUnstable.treefmt; # we need argument '--tree-root-file'
     projectRootFile = "flake.nix";
     programs = {
       alejandra.enable = true;
       cue.enable = true;
       jsonfmt.enable = true;
-      mdformat.enable = true;
+      mdformat = {
+        enable = true;
+        package = pkgsUnstable.python312Packages.mdformat; # error with ghostscripts in darwin
+      };
       mdsh.enable = true;
       shfmt.enable = true;
       yamlfmt.enable = true;
