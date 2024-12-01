@@ -7,22 +7,6 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    darwin = {
-      url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs-stable";
-    };
-
-    sops = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-      inputs.nixpkgs-stable.follows = "nixpkgs-stable";
-    };
-
-    home-manager = {
-      url = "github:nix-community/home-manager/release-24.05";
-      inputs.nixpkgs.follows = "nixpkgs-stable";
-    };
-
     nixago = {
       url = "github:jmgilman/nixago";
       inputs = {

@@ -1,10 +1,10 @@
 {
   data,
   pkgs,
-  self,
+  unit,
   ...
 }: let
-  inherit (self.lib) nixago;
+  inherit (unit.lib) nixago;
   inherit
     (nixago.make {
       inherit pkgs;

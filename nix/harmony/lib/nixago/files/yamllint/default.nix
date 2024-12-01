@@ -1,9 +1,9 @@
 {
   lib,
-  self,
+  unit,
   ...
 }: data: pkgs: let
-  engines = self.lib.nixago.engines pkgs;
+  engines = unit.lib.nixago.engines pkgs;
   output = "yamllint.yaml";
 in {
   inherit data output;

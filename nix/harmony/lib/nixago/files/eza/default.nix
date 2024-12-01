@@ -1,5 +1,5 @@
-{self, ...}: data: pkgs: let
-  engines = self.lib.nixago.engines pkgs;
+{unit, ...}: data: pkgs: let
+  engines = unit.lib.nixago.engines pkgs;
   output = "eza/theme.yml";
 in {
   inherit data output;

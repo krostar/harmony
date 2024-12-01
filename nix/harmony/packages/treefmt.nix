@@ -1,11 +1,11 @@
 {
   data,
   pkgs,
-  self,
+  unit,
   ...
 }: let
   treefmt =
-    (self.lib.treefmt.eval {
+    (unit.lib.treefmt.eval {
       inherit pkgs;
       config = data.dev.formatters.treefmt.${pkgs.system};
     })

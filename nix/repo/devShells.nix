@@ -1,12 +1,12 @@
 {
   pkgs,
-  self,
+  unit,
   units,
   ...
 }: let
   nixagoFiles = units.harmony.lib.nixago.makeAll {
     inherit pkgs;
-    configs = builtins.attrValues self.nixago;
+    configs = builtins.attrValues unit.nixago;
     log = false;
   };
 in
