@@ -77,17 +77,14 @@
       period = true;
       scope = "toplevel";
     };
-    gomnd = {
+    mnd = {
       ignored-numbers = ["10" "32" "64" "128"];
     };
     gofumpt = {
       extra-rules = true;
     };
     govet = {
-      check-shadowing = true;
-      disable = [
-        "fieldalignment"
-      ];
+      disable = ["fieldalignment"];
       enable-all = true;
     };
     grouper = {
@@ -166,7 +163,7 @@
         }
         {
           name = "defer";
-          arguments = ["call-chain" "loop" "recover" "immediate-recover" "return"];
+          arguments = [["call-chain" "loop" "recover" "immediate-recover" "return"]];
         }
         {
           name = "function-result-limit";
@@ -195,10 +192,9 @@
     disable = [
       "bodyclose"
       "cyclop"
-      "deadcode"
       "decorder"
       "dogsled"
-      "exhaustivestruct"
+      "err113"
       "exhaustruct"
       "forbidigo"
       "forcetypeassert"
@@ -206,28 +202,20 @@
       "ginkgolinter"
       "gocognit"
       "gocyclo"
-      "goerr113"
       "goheader"
-      "golint"
-      "ifshort"
-      "interfacer"
       "ireturn"
       "lll"
       "loggercheck"
       "maintidx"
       "makezero"
-      "maligned"
+      "exportloopref"
       "nlreturn"
-      "nosnakecase"
       "paralleltest"
       "prealloc"
       "promlinter"
-      "scopelint"
-      "structcheck"
       "testpackage"
       "thelper"
       "tparallel"
-      "varcheck"
       "varnamelen"
       "wrapcheck"
       "wsl"

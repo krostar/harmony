@@ -42,7 +42,7 @@ output?: {
 	// Output formats to use.
 	formats?: [...{
 		path?:  ("stdout" | "stderr" | string) & string | *"stdout"
-		format: "colored-line-number" | "line-number" | "json" | "colored-tab" | "tab" | "html" | "checkstyle" | "code-climate" | "junit-xml" | "github-actions" | "teamcity" | "sarif" | *"colored-line-number"
+		format: "colored-line-number" | "line-number" | "json" | "colored-tab" | "tab" | "html" | "checkstyle" | "code-climate" | "junit-xml" | "junit-xml-extended" | "github-actions" | "teamcity" | "sarif" | *"colored-line-number"
 	}]
 
 	// Print lines of code with issue.
@@ -307,6 +307,9 @@ output?: {
 
 		// Enable custom order of sections.
 		"custom-order"?: bool | *false
+
+		// Drops lexical ordering for custom sections.
+		"no-lex-order"?: bool | *false
 	}
 	ginkgolinter?: {
 		// Suppress the wrong length assertion warning.
@@ -346,6 +349,15 @@ output?: {
 		// like `Describe`, `Context` and `When`, instead of in
 		// `BeforeEach()`.
 		"forbid-spec-pollution"?: bool | *false
+
+		// Force using the Succeed matcher for error functions, and the
+		// HaveOccurred matcher for non-function error values.
+		"force-succeed"?: bool | *false
+	}
+	gochecksumtype?: {
+		// Presence of `default` case in switch statements satisfies
+		// exhaustiveness, if all members are not listed.
+		"default-signifies-exhaustive"?: bool | *true
 	}
 	gocognit?: {
 		// Minimal code complexity to report (we recommend 10-20).
@@ -635,6 +647,11 @@ output?: {
 		"var-require-single-var"?:       bool | *false
 		"var-require-grouping"?:         bool | *false
 	}
+	iface?: {
+		// Enable analyzers by name.
+		enable?: [...#["iface-analyzers"]]
+		settings?: unused?: exclude?: [...string]
+	}
 	importas?: {
 		// Do not allow unaliased imports of aliased packages.
 		"no-unaliased"?: bool | *false
@@ -746,8 +763,12 @@ output?: {
 		"min-complexity"?: int | *5
 	}
 	nilnil?: {
+		// In addition, detect opposite situation (simultaneous return of
+		// non-nil error and valid value).
+		"detect-opposite"?: bool | *false
+
 		// List of return types to check.
-		"checked-types"?: [..."ptr" | "func" | "iface" | "map" | "chan" | "uintptr" | "unsafeptr"] | *["ptr", "func", "iface", "map", "chan", "uintptr", "unsafeptr"]
+		"checked-types"?: [..."chan" | "func" | "iface" | "map" | "ptr" | "uintptr" | "unsafeptr"] | *["chan", "func", "iface", "map", "ptr", "uintptr", "unsafeptr"]
 	}
 	nlreturn?: {
 		// set block size that is still ok
@@ -971,10 +992,10 @@ output?: {
 		"disable-all"?: bool | *false
 
 		// Enable specific checkers.
-		enable?: [..."blank-import" | "bool-compare" | "compares" | "empty" | "error-is-as" | "error-nil" | "expected-actual" | "float-compare" | "go-require" | "len" | "negative-positive" | "nil-compare" | "require-error" | "suite-dont-use-pkg" | "suite-extra-assert-call" | "suite-thelper" | "useless-assert"] | *["blank-import", "bool-compare", "compares", "empty", "error-is-as", "error-nil", "expected-actual", "float-compare", "go-require", "len", "negative-positive", "nil-compare", "require-error", "suite-dont-use-pkg", "suite-extra-assert-call", "useless-assert"]
+		enable?: [..."blank-import" | "bool-compare" | "compares" | "contains" | "empty" | "encoded-compare" | "error-is-as" | "error-nil" | "expected-actual" | "float-compare" | "formatter" | "go-require" | "len" | "negative-positive" | "nil-compare" | "regexp" | "require-error" | "suite-broken-parallel" | "suite-dont-use-pkg" | "suite-extra-assert-call" | "suite-subtest-run" | "suite-thelper" | "useless-assert"] | *["blank-import", "bool-compare", "compares", "contains", "empty", "encoded-compare", "error-is-as", "error-nil", "expected-actual", "float-compare", "formatter", "go-require", "len", "negative-positive", "nil-compare", "regexp", "require-error", "suite-broken-parallel", "suite-dont-use-pkg", "suite-extra-assert-call", "suite-subtest-run", "useless-assert"]
 
 		// Disable specific checkers.
-		disable?: [..."blank-import" | "bool-compare" | "compares" | "empty" | "error-is-as" | "error-nil" | "expected-actual" | "float-compare" | "go-require" | "len" | "negative-positive" | "nil-compare" | "require-error" | "suite-dont-use-pkg" | "suite-extra-assert-call" | "suite-thelper" | "useless-assert" | *["suite-thelper"]]
+		disable?: [..."blank-import" | "bool-compare" | "compares" | "contains" | "empty" | "encoded-compare" | "error-is-as" | "error-nil" | "expected-actual" | "float-compare" | "formatter" | "go-require" | "len" | "negative-positive" | "nil-compare" | "regexp" | "require-error" | "suite-broken-parallel" | "suite-dont-use-pkg" | "suite-extra-assert-call" | "suite-subtest-run" | "suite-thelper" | "useless-assert" | *["suite-thelper"]]
 		"bool-compare"?: {
 			// To ignore user defined types (over builtin bool).
 			"ignore-custom-types"?: bool | *false
@@ -982,6 +1003,14 @@ output?: {
 		"expected-actual"?: {
 			// Regexp for expected variable name.
 			pattern?: string | *"(^(exp(ected)?|want(ed)?)([A-Z]\\w*)?$)|(^(\\w*[a-z])?(Exp(ected)?|Want(ed)?)$)"
+		}
+		formatter?: {
+			// To enable go vet's printf checks.
+			"check-format-string"?: bool | *true
+
+			// To require f-assertions (e.g. assert.Equalf) if format string
+			// is used, even if there are no variable-length variables.
+			"require-f-funcs"?: bool | *false
 		}
 		"go-require"?: {
 			// To ignore HTTP handlers (like http.HandlerFunc).
@@ -1097,7 +1126,6 @@ output?: {
 	unused?: {
 		"field-writes-are-uses"?:     bool | *true
 		"post-statements-are-reads"?: bool | *false
-		"exported-is-used"?:          bool | *true
 		"exported-fields-are-used"?:  bool | *true
 		"parameters-are-used"?:       bool | *true
 		"local-variables-are-used"?:  bool | *true
@@ -1381,14 +1409,16 @@ severity?: {
 	}]
 }
 
-#: "gocritic-checks": "appendAssign" | "appendCombine" | "argOrder" | "assignOp" | "badCall" | "badCond" | "badLock" | "badRegexp" | "badSorting" | "boolExprSimplify" | "builtinShadow" | "builtinShadowDecl" | "captLocal" | "caseOrder" | "codegenComment" | "commentedOutCode" | "commentedOutImport" | "commentFormatting" | "defaultCaseOrder" | "deferUnlambda" | "deferInLoop" | "deprecatedComment" | "docStub" | "dupArg" | "dupBranchBody" | "dupCase" | "dupImport" | "dupSubExpr" | "dynamicFmtString" | "elseif" | "emptyDecl" | "emptyFallthrough" | "emptyStringTest" | "equalFold" | "evalOrder" | "exitAfterDefer" | "exposedSyncMutex" | "externalErrorReassign" | "filepathJoin" | "flagDeref" | "flagName" | "hexLiteral" | "httpNoBody" | "hugeParam" | "ifElseChain" | "importShadow" | "indexAlloc" | "initClause" | "ioutilDeprecated" | "mapKey" | "methodExprCall" | "nestingReduce" | "newDeref" | "nilValReturn" | "octalLiteral" | "offBy1" | "paramTypeCombine" | "preferDecodeRune" | "preferFilepathJoin" | "preferFprint" | "preferStringWriter" | "preferWriteByte" | "ptrToRefParam" | "rangeExprCopy" | "rangeValCopy" | "redundantSprint" | "regexpMust" | "regexpPattern" | "regexpSimplify" | "returnAfterHttpError" | "ruleguard" | "singleCaseSwitch" | "sliceClear" | "sloppyLen" | "sloppyReassign" | "sloppyTypeAssert" | "sortSlice" | "sprintfQuotedString" | "sqlQuery" | "stringConcatSimplify" | "stringsCompare" | "stringXbytes" | "suspiciousSorting" | "switchTrue" | "syncMapLoadAndDelete" | "timeCmpSimplify" | "timeExprSimplify" | "tooManyResultsChecker" | "truncateCmp" | "typeAssertChain" | "typeDefFirst" | "typeSwitchVar" | "typeUnparen" | "uncheckedInlineErr" | "underef" | "unlabelStmt" | "unlambda" | "unnamedResult" | "unnecessaryBlock" | "unnecessaryDefer" | "unslice" | "valSwap" | "weakCond" | "whyNoLint" | "wrapperFunc" | "yodaStyleExpr"
+#: "gocritic-checks": "appendAssign" | "appendCombine" | "argOrder" | "assignOp" | "badCall" | "badCond" | "badLock" | "badRegexp" | "badSorting" | "badSyncOnceFunc" | "boolExprSimplify" | "builtinShadow" | "builtinShadowDecl" | "captLocal" | "caseOrder" | "codegenComment" | "commentFormatting" | "commentedOutCode" | "commentedOutImport" | "defaultCaseOrder" | "deferInLoop" | "deferUnlambda" | "deprecatedComment" | "docStub" | "dupArg" | "dupBranchBody" | "dupCase" | "dupImport" | "dupSubExpr" | "dynamicFmtString" | "elseif" | "emptyDecl" | "emptyFallthrough" | "emptyStringTest" | "equalFold" | "evalOrder" | "exitAfterDefer" | "exposedSyncMutex" | "externalErrorReassign" | "filepathJoin" | "flagDeref" | "flagName" | "hexLiteral" | "httpNoBody" | "hugeParam" | "ifElseChain" | "importShadow" | "indexAlloc" | "initClause" | "ioutilDeprecated" | "mapKey" | "methodExprCall" | "nestingReduce" | "newDeref" | "nilValReturn" | "octalLiteral" | "offBy1" | "paramTypeCombine" | "preferDecodeRune" | "preferFilepathJoin" | "preferFprint" | "preferStringWriter" | "preferWriteByte" | "ptrToRefParam" | "rangeAppendAll" | "rangeExprCopy" | "rangeValCopy" | "redundantSprint" | "regexpMust" | "regexpPattern" | "regexpSimplify" | "returnAfterHttpError" | "ruleguard" | "singleCaseSwitch" | "sliceClear" | "sloppyLen" | "sloppyReassign" | "sloppyTypeAssert" | "sortSlice" | "sprintfQuotedString" | "sqlQuery" | "stringConcatSimplify" | "stringXbytes" | "stringsCompare" | "switchTrue" | "syncMapLoadAndDelete" | "timeExprSimplify" | "todoCommentWithoutDetail" | "tooManyResultsChecker" | "truncateCmp" | "typeAssertChain" | "typeDefFirst" | "typeSwitchVar" | "typeUnparen" | "uncheckedInlineErr" | "underef" | "unlabelStmt" | "unlambda" | "unnamedResult" | "unnecessaryBlock" | "unnecessaryDefer" | "unslice" | "valSwap" | "weakCond" | "whyNoLint" | "wrapperFunc" | "yodaStyleExpr"
 
 #: "gocritic-tags": "diagnostic" | "style" | "performance" | "experimental" | "opinionated" | "security"
 
-#: "gosec-rules": "G101" | "G102" | "G103" | "G104" | "G106" | "G107" | "G108" | "G109" | "G110" | "G111" | "G112" | "G113" | "G114" | "G201" | "G202" | "G203" | "G204" | "G301" | "G302" | "G303" | "G304" | "G305" | "G306" | "G307" | "G401" | "G402" | "G403" | "G404" | "G501" | "G502" | "G503" | "G504" | "G505" | "G601" | "G602"
+#: "gosec-rules": "G101" | "G102" | "G103" | "G104" | "G106" | "G107" | "G108" | "G109" | "G110" | "G111" | "G112" | "G113" | "G114" | "G115" | "G201" | "G202" | "G203" | "G204" | "G301" | "G302" | "G303" | "G304" | "G305" | "G306" | "G307" | "G401" | "G402" | "G403" | "G404" | "G405" | "G406" | "G501" | "G502" | "G503" | "G504" | "G505" | "G506" | "G507" | "G601" | "G602"
 
-#: "govet-analyzers": "appends" | "asmdecl" | "assign" | "atomic" | "atomicalign" | "bools" | "buildtag" | "cgocall" | "composites" | "copylocks" | "deepequalerrors" | "defers" | "directive" | "errorsas" | "fieldalignment" | "findcall" | "framepointer" | "httpresponse" | "ifaceassert" | "loopclosure" | "lostcancel" | "nilfunc" | "nilness" | "printf" | "reflectvaluecompare" | "shadow" | "shift" | "sigchanyzer" | "slog" | "sortslice" | "stdmethods" | "stringintconv" | "structtag" | "testinggoroutine" | "tests" | "unmarshal" | "unreachable" | "unsafeptr" | "unusedresult" | "unusedwrite"
+#: "govet-analyzers": "appends" | "asmdecl" | "assign" | "atomic" | "atomicalign" | "bools" | "buildtag" | "cgocall" | "composites" | "copylocks" | "deepequalerrors" | "defers" | "directive" | "errorsas" | "fieldalignment" | "findcall" | "framepointer" | "httpresponse" | "ifaceassert" | "loopclosure" | "lostcancel" | "nilfunc" | "nilness" | "printf" | "reflectvaluecompare" | "shadow" | "shift" | "sigchanyzer" | "slog" | "sortslice" | "stdmethods" | "stringintconv" | "structtag" | "testinggoroutine" | "tests" | "timeformat" | "unmarshal" | "unreachable" | "unsafeptr" | "unusedresult" | "unusedwrite"
 
-#: "revive-rules": "add-constant" | "argument-limit" | "atomic" | "banned-characters" | "bare-return" | "blank-imports" | "bool-literal-in-expr" | "call-to-gc" | "cognitive-complexity" | "comment-spacings" | "confusing-naming" | "confusing-results" | "constant-logical-expr" | "context-as-argument" | "context-keys-type" | "cyclomatic" | "datarace" | "deep-exit" | "defer" | "dot-imports" | "duplicated-imports" | "early-return" | "empty-block" | "empty-lines" | "enforce-map-style" | "enforce-repeated-arg-type-style" | "enforce-slice-style" | "error-naming" | "error-return" | "error-strings" | "errorf" | "exported" | "file-header" | "flag-parameter" | "function-length" | "function-result-limit" | "get-return" | "identical-branches" | "if-return" | "import-alias-naming" | "import-shadowing" | "imports-blocklist" | "increment-decrement" | "indent-error-flow" | "line-length-limit" | "max-control-nesting" | "max-public-structs" | "modifies-parameter" | "modifies-value-receiver" | "nested-structs" | "optimize-operands-order" | "package-comments" | "range" | "range-val-address" | "range-val-in-closure" | "receiver-naming" | "redefines-builtin-id" | "redundant-import-alias" | "string-format" | "string-of-int" | "struct-tag" | "superfluous-else" | "time-equal" | "time-naming" | "unchecked-type-assertion" | "unconditional-recursion" | "unexported-naming" | "unexported-return" | "unhandled-error" | "unnecessary-stmt" | "unreachable-code" | "unused-parameter" | "unused-receiver" | "use-any" | "useless-break" | "var-declaration" | "var-naming" | "waitgroup-by-value"
+#: "revive-rules": "add-constant" | "argument-limit" | "atomic" | "banned-characters" | "bare-return" | "blank-imports" | "bool-literal-in-expr" | "call-to-gc" | "cognitive-complexity" | "comment-spacings" | "comments-density" | "confusing-naming" | "confusing-results" | "constant-logical-expr" | "context-as-argument" | "context-keys-type" | "cyclomatic" | "datarace" | "deep-exit" | "defer" | "dot-imports" | "duplicated-imports" | "early-return" | "empty-block" | "empty-lines" | "enforce-map-style" | "enforce-repeated-arg-type-style" | "enforce-slice-style" | "error-naming" | "error-return" | "error-strings" | "errorf" | "exported" | "file-header" | "file-length-limit" | "filename-format" | "flag-parameter" | "function-length" | "function-result-limit" | "get-return" | "identical-branches" | "if-return" | "import-alias-naming" | "import-shadowing" | "imports-blocklist" | "increment-decrement" | "indent-error-flow" | "line-length-limit" | "max-control-nesting" | "max-public-structs" | "modifies-parameter" | "modifies-value-receiver" | "nested-structs" | "optimize-operands-order" | "package-comments" | "range" | "range-val-address" | "range-val-in-closure" | "receiver-naming" | "redefines-builtin-id" | "redundant-import-alias" | "string-format" | "string-of-int" | "struct-tag" | "superfluous-else" | "time-equal" | "time-naming" | "unchecked-type-assertion" | "unconditional-recursion" | "unexported-naming" | "unexported-return" | "unhandled-error" | "unnecessary-stmt" | "unreachable-code" | "unused-parameter" | "unused-receiver" | "use-any" | "useless-break" | "var-declaration" | "var-naming" | "waitgroup-by-value"
 
-#linters: ("asasalint" | "asciicheck" | "bidichk" | "bodyclose" | "canonicalheader" | "containedctx" | "contextcheck" | "copyloopvar" | "cyclop" | "deadcode" | "decorder" | "depguard" | "dogsled" | "dupl" | "dupword" | "durationcheck" | "errcheck" | "errchkjson" | "errname" | "errorlint" | "execinquery" | "exhaustive" | "exhaustivestruct" | "exhaustruct" | "exportloopref" | "fatcontext" | "forbidigo" | "forcetypeassert" | "funlen" | "gci" | "ginkgolinter" | "gocheckcompilerdirectives" | "gochecknoglobals" | "gochecknoinits" | "gochecksumtype" | "gocognit" | "goconst" | "gocritic" | "gocyclo" | "godot" | "godox" | "err113" | "gofmt" | "gofumpt" | "goheader" | "goimports" | "golint" | "gomoddirectives" | "gomodguard" | "goprintffuncname" | "gosec" | "gosimple" | "gosmopolitan" | "govet" | "grouper" | "ifshort" | "importas" | "inamedparam" | "ineffassign" | "interfacebloat" | "interfacer" | "intrange" | "ireturn" | "lll" | "loggercheck" | "maintidx" | "makezero" | "maligned" | "mirror" | "misspell" | "mnd" | "musttag" | "nakedret" | "nestif" | "nilerr" | "nilnil" | "nlreturn" | "noctx" | "nolintlint" | "nonamedreturns" | "nosnakecase" | "nosprintfhostport" | "paralleltest" | "perfsprint" | "prealloc" | "predeclared" | "promlinter" | "protogetter" | "reassign" | "revive" | "rowserrcheck" | "scopelint" | "sloglint" | "sqlclosecheck" | "staticcheck" | "structcheck" | "stylecheck" | "tagalign" | "tagliatelle" | "tenv" | "testableexamples" | "testifylint" | "testpackage" | "thelper" | "tparallel" | "typecheck" | "unconvert" | "unparam" | "unused" | "usestdlibvars" | "varcheck" | "varnamelen" | "wastedassign" | "whitespace" | "wrapcheck" | "wsl" | "zerologlint" | string) & string
+#: "iface-analyzers": "identical" | "unused" | "opaque"
+
+#linters: ("asasalint" | "asciicheck" | "bidichk" | "bodyclose" | "canonicalheader" | "containedctx" | "contextcheck" | "copyloopvar" | "cyclop" | "decorder" | "depguard" | "dogsled" | "dupl" | "dupword" | "durationcheck" | "errcheck" | "errchkjson" | "errname" | "errorlint" | "exhaustive" | "exhaustruct" | "exportloopref" | "fatcontext" | "forbidigo" | "forcetypeassert" | "funlen" | "gci" | "ginkgolinter" | "gocheckcompilerdirectives" | "gochecknoglobals" | "gochecknoinits" | "gochecksumtype" | "gocognit" | "goconst" | "gocritic" | "gocyclo" | "godot" | "godox" | "err113" | "gofmt" | "gofumpt" | "goheader" | "goimports" | "gomoddirectives" | "gomodguard" | "goprintffuncname" | "gosec" | "gosimple" | "gosmopolitan" | "govet" | "grouper" | "iface" | "importas" | "inamedparam" | "ineffassign" | "interfacebloat" | "intrange" | "ireturn" | "lll" | "loggercheck" | "maintidx" | "makezero" | "mirror" | "misspell" | "mnd" | "musttag" | "nakedret" | "nestif" | "nilerr" | "nilnil" | "nlreturn" | "noctx" | "nolintlint" | "nonamedreturns" | "nosprintfhostport" | "paralleltest" | "perfsprint" | "prealloc" | "predeclared" | "promlinter" | "protogetter" | "reassign" | "recvcheck" | "revive" | "rowserrcheck" | "sloglint" | "sqlclosecheck" | "staticcheck" | "stylecheck" | "tagalign" | "tagliatelle" | "tenv" | "testableexamples" | "testifylint" | "testpackage" | "thelper" | "tparallel" | "unconvert" | "unparam" | "unused" | "usestdlibvars" | "varnamelen" | "wastedassign" | "whitespace" | "wrapcheck" | "wsl" | "zerologlint" | string) & string

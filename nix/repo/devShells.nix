@@ -27,5 +27,6 @@ in
         alejandra
         nix-diff
         nix-tree
+        cue
       ]);
   }
