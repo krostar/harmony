@@ -1,5 +1,17 @@
-{flake, ...}: {
+{
+  flake,
+  unit,
+  ...
+}: {
   config,
   pkgs,
 }:
-flake.inputs.treefmt.lib.evalModule pkgs config
+pkgs.lib.evalModules {
+  modules =
+    (flake.inputs.treefmt.lib.all-modules pkgs)
+    ++ [
+      unit.lib.treefmt.options.gci
+      unit.lib.treefmt.options.goimports
+      config
+    ];
+}
