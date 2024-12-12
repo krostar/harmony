@@ -23,5 +23,5 @@ in
     set -o xtrace  # Print commands and their arguments as they are executed.
 
     ${golangci-lint}/bin/golangci-lint run --config ${configFile} --verbose "$@"
-    ${pkgs.govulncheck}/bin/govulncheck -v ./...
+    ${pkgs.govulncheck}/bin/govulncheck ./...
   ''
