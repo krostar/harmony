@@ -7,13 +7,20 @@
           "dupl"
           "errcheck"
           "errorlint"
+          "gosec"
+          "noctx"
           "nonamedreturns"
         ];
       }
       {
         path = "_test\\.go";
         linters = ["revive"];
-        text = "nested-structs";
+        text = "context-keys-type|nested-structs";
+      }
+      {
+        path = "_test\\.go";
+        linters = ["staticcheck"];
+        text = "SA1029";
       }
     ];
     exclude-use-default = false;
@@ -84,9 +91,6 @@
       capital = true;
       period = true;
       scope = "toplevel";
-    };
-    mnd = {
-      ignored-numbers = ["10" "32" "64" "128"];
     };
     gofumpt = {
       extra-rules = true;
@@ -203,6 +207,7 @@
       "dogsled"
       "err113"
       "exhaustruct"
+      "exportloopref"
       "forbidigo"
       "forcetypeassert"
       "funlen"
@@ -215,7 +220,7 @@
       "loggercheck"
       "maintidx"
       "makezero"
-      "exportloopref"
+      "mnd"
       "nlreturn"
       "paralleltest"
       "prealloc"

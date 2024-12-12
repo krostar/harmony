@@ -26,6 +26,8 @@ in
       ])
       ++ (with pkgs; [
         go_1_23
+        gotools
+        govulncheck
         nix-diff
         nix-tree
       ]);
