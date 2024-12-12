@@ -4,9 +4,16 @@
       {
         path = "_test\\.go";
         linters = [
-          "errorlint"
           "dupl"
+          "errcheck"
+          "errorlint"
+          "nonamedreturns"
         ];
+      }
+      {
+        path = "_test\\.go";
+        linters = ["revive"];
+        text = "nested-structs";
       }
     ];
     exclude-use-default = false;
@@ -48,6 +55,7 @@
         "(io.ReadCloser).Close"
         "encoding/json.Marshal"
         "encoding/json.MarshalIndent"
+        "fmt.Fprintf"
       ];
     };
     errchkjson = {
@@ -88,7 +96,6 @@
       enable-all = true;
     };
     grouper = {
-      import-require-grouping = true;
       import-require-single-import = true;
     };
     importas = {
