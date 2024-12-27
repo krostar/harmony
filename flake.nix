@@ -26,7 +26,7 @@
     };
 
     synergy = {
-      url = "git+ssh://git@github.com/krostar/synergy";
+      url = "github:krostar/synergy";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
