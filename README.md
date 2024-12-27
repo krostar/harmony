@@ -28,7 +28,7 @@ outputs = inputs @ {synergy,...}: {
 
 ```nix
 # nix/repo/devShell.nix
-# {
+{
   pkgs,
   deps,
   ...
