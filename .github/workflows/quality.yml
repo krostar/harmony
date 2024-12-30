@@ -37,7 +37,7 @@ jobs:
         run: "nix flake check --all-systems --print-build-logs"
 
       - name: "Files respect Editorconfig configuration"
-        run: "nix develop --command editorconfig-checker"
+        run: "nix develop --command lint-editorconfig"
 
       - name: "Files respect treefmt format"
         run: |

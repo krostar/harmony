@@ -14,15 +14,18 @@
     configFile
     ;
 in
-  pkgs.writeScriptBin "lint-yaml" ''
-    #!/bin/sh
+  pkgs.writeShellApplication {
+    name = "lint-yaml";
 
-    if [ "$#" -ne 0 ]; then
-      >&2 echo "This script takes no arguments."
-      exit 1
-    fi
+    runtimeInputs = [pkgs.yamllint];
+    checkPhase = "";
 
-    set -o xtrace # Print commands and their arguments as they are executed.
+    text = ''
+      tolint=(".")
+      if [ "$#" -ne 0 ]; then
+        tolint=("$@")
+      fi
 
-    ${pkgs.yamllint}/bin/yamllint -c ${configFile} .
-  ''
+      yamllint -c ${configFile} "''${tolint[@]}"
+    '';
+  }

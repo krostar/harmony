@@ -11,13 +11,21 @@
     })
     .config;
 in
-  pkgs.writeScriptBin "treefmt" ''
-    #!${pkgs.bash}/bin/bash
+  pkgs.writeShellApplication {
+    name = "treefmt";
 
-    set -o xtrace # Print commands and their arguments as they are executed.
+    runtimeInputs = [treefmt.package];
+    checkPhase = "";
 
-    ${treefmt.package}/bin/treefmt                \
-      --config-file=${treefmt.build.configFile}   \
-      --tree-root-file=${treefmt.projectRootFile} \
-      "$@"
-  ''
+    text = ''
+      tofmt=(".")
+      if [ "$#" -ne 0 ]; then
+        tofmt=("$@")
+      fi
+
+      treefmt                                       \
+        --config-file=${treefmt.build.configFile}   \
+        --tree-root-file=${treefmt.projectRootFile} \
+        "''${tofmt[@]}"
+    '';
+  }

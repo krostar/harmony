@@ -16,7 +16,7 @@ in
 
     nativeBuildInputs =
       (with units.harmony.packages; [
-        editorconfig-checker
+        lint-editorconfig
         lint-ghaction
         lint-go
         lint-nix

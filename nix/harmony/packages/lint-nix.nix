@@ -5,30 +5,32 @@
 }: let
   config = data.ci.linters.lint-nix;
 in
-  pkgs.writeScriptBin "lint-nix" ''
-    #!${pkgs.bash}/bin/bash
+  pkgs.writeShellApplication {
+    name = "lint-nix";
 
-    if [ "$#" -ne 0 ]; then
-      >&2 echo "This script takes no arguments."
-      exit 1
-    fi
+    runtimeInputs = with pkgs; [alejandra deadnix statix];
+    checkPhase = "";
 
-    set -o errexit # Exit immediately if a command exits with a non-zero status.
-    set -o xtrace  # Print commands and their arguments as they are executed.
+    text = ''
+      tolint=(".")
+      if [ "$#" -ne 0 ]; then
+        tolint=("$@")
+      fi
 
-    ${pkgs.alejandra}/bin/alejandra --check --quiet ${
-      builtins.concatStringsSep " " (builtins.map (i: "--exclude ${i}") config.alejandra.exclude)
-    } .
+      alejandra --check --quiet ${
+        builtins.concatStringsSep " " (builtins.map (i: "--exclude ${i}") config.alejandra.exclude)
+      } "''${tolint[@]}"
 
-    ${pkgs.statix}/bin/statix check ${
-      if builtins.length config.statix.ignore > 0
-      then "--ignore ${builtins.concatStringsSep " " config.statix.ignore}"
-      else ""
-    } .
+      statix check ${
+        if builtins.length config.statix.ignore > 0
+        then "--ignore ${builtins.concatStringsSep " " config.statix.ignore}"
+        else ""
+      } "''${tolint[@]}"
 
-    ${pkgs.deadnix}/bin/deadnix --fail --hidden ${
-      if builtins.length config.deadnix.exclude > 0
-      then "--exclude ${builtins.concatStringsSep " " config.deadnix.exclude}"
-      else ""
-    } -- .
-  ''
+      deadnix --fail --hidden ${
+        if builtins.length config.deadnix.exclude > 0
+        then "--exclude ${builtins.concatStringsSep " " config.deadnix.exclude}"
+        else ""
+      } -- "''${tolint[@]}"
+    '';
+  }
