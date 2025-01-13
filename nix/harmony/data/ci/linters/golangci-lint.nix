@@ -15,7 +15,7 @@
       {
         path = "_test\\.go";
         linters = ["revive"];
-        text = "context-keys-type|nested-structs";
+        text = "context-keys-type|nested-structs|unchecked-type-assertion";
       }
       {
         path = "_test\\.go";
