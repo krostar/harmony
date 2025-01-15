@@ -54,7 +54,6 @@
         };
       };
     };
-
     errcheck = {
       check-blank = true;
       exclude-functions = [
@@ -180,6 +179,18 @@
           name = "function-result-limit";
           arguments = [3];
         }
+      ];
+    };
+    sloglint = {
+      no-global = "all";
+      context = "scope";
+      static-msg = true;
+      key-naming-case = "snake";
+      forbidden-keys = [
+        "time"
+        "level"
+        "msg"
+        "source"
       ];
     };
     stylecheck = {
