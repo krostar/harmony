@@ -61,7 +61,12 @@
         "(io.ReadCloser).Close"
         "encoding/json.Marshal"
         "encoding/json.MarshalIndent"
+        "fmt.Fprint"
         "fmt.Fprintf"
+        "fmt.Fprintln"
+        "fmt.Print"
+        "fmt.Printf"
+        "fmt.Println"
       ];
     };
     errchkjson = {
