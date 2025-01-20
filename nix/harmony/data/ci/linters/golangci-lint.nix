@@ -32,6 +32,7 @@
     depguard = {
       rules = {
         all = {
+          list-mode = "lax";
           deny = [
             {
               pkg = "reflect";
@@ -41,16 +42,21 @@
               pkg = "github.com/pkg/errors";
               desc = "use go1.13 errors";
             }
+            {
+              pkg = "math/rand$";
+              desc = "math/rand now has a v2, see https://go.dev/blog/randv2";
+            }
           ];
-          test = {
-            files = ["$test"];
-            deny = [
-              {
-                pkg = "github.com/stretchr/testify";
-                desc = "testing should be done using gotest.tools/v3/assert";
-              }
-            ];
-          };
+        };
+        test = {
+          files = ["$test"];
+          list-mode = "lax";
+          deny = [
+            {
+              pkg = "github.com/stretchr/testify";
+              desc = "testing should be done using gotest.tools/v3/assert";
+            }
+          ];
         };
       };
     };
@@ -61,12 +67,6 @@
         "(io.ReadCloser).Close"
         "encoding/json.Marshal"
         "encoding/json.MarshalIndent"
-        "fmt.Fprint"
-        "fmt.Fprintf"
-        "fmt.Fprintln"
-        "fmt.Print"
-        "fmt.Printf"
-        "fmt.Println"
       ];
     };
     errchkjson = {
@@ -137,6 +137,10 @@
           disabled = true;
         }
         {
+          name = "argument-limit";
+          disabled = true;
+        }
+        {
           name = "banned-characters";
           disabled = true;
         }
@@ -147,6 +151,10 @@
         {
           name = "cyclomatic";
           disabled = true;
+        }
+        {
+          name = "defer";
+          arguments = [["call-chain" "loop" "recover" "immediate-recover" "return"]];
         }
         {
           name = "file-header";
@@ -161,6 +169,10 @@
           disabled = true;
         }
         {
+          name = "function-result-limit";
+          arguments = [3];
+        }
+        {
           name = "line-length-limit";
           disabled = true;
         }
@@ -173,16 +185,8 @@
           disabled = true;
         }
         {
-          name = "argument-limit";
+          name = "unhandled-error";
           disabled = true;
-        }
-        {
-          name = "defer";
-          arguments = [["call-chain" "loop" "recover" "immediate-recover" "return"]];
-        }
-        {
-          name = "function-result-limit";
-          arguments = [3];
         }
       ];
     };
