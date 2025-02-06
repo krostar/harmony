@@ -1,3 +1,7 @@
-{data, ...}: {
-  inherit (data.ci.linters) golangci-lint;
+{
+  data,
+  pkgs,
+  ...
+}: {
+  inherit (data.${pkgs.system}.ci.linters) golangci-lint;
 }

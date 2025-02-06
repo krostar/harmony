@@ -6,7 +6,7 @@
 }: let
   nixagoFiles = units.harmony.lib.nixago.makeAll {
     inherit pkgs;
-    configs = [(units.harmony.lib.nixago.files.editorconfig data.dev.editorconfig pkgs)];
+    configs = [(units.harmony.lib.nixago.files.editorconfig data.${pkgs.system}.dev.editorconfig pkgs)];
     log = false;
   };
 in

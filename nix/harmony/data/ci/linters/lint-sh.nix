@@ -1,6 +1,4 @@
-{pkgs, ...}: {
-  "${pkgs.system}" = {
-    findFiles = ["*.sh" "*.bash" "*.zsh"];
-    additionalFiles = ["./.envrc"];
-  };
+{
+  findFiles = ["*.sh" "*.bash" "*.zsh"];
+  additionalFiles = ["./.envrc"];
 }

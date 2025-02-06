@@ -2,15 +2,14 @@
   description = "Template for my projects";
 
   inputs = {
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.11";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     flake-utils.url = "github:numtide/flake-utils";
 
     nixago = {
       url = "github:jmgilman/nixago";
       inputs = {
-        nixpkgs.follows = "nixpkgs-unstable";
+        nixpkgs.follows = "nixpkgs";
         nixago-exts.follows = "nixago-exts";
         flake-utils.follows = "flake-utils";
       };
@@ -19,7 +18,7 @@
     nixago-exts = {
       url = "github:nix-community/nixago-extensions";
       inputs = {
-        nixpkgs.follows = "nixpkgs-unstable";
+        nixpkgs.follows = "nixpkgs";
         nixago.follows = "nixago";
         flake-utils.follows = "flake-utils";
       };
@@ -27,21 +26,21 @@
 
     synergy = {
       url = "github:krostar/synergy";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     treefmt = {
       url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs = inputs @ {
-    nixpkgs-stable,
+    nixpkgs,
     synergy,
     ...
   }: let
-    inherit (nixpkgs-stable) lib;
+    inherit (nixpkgs) lib;
   in
     synergy.lib.mkFlake {
       inherit inputs;
@@ -49,7 +48,8 @@
 
       eval = {
         synergy = {
-          mkPkgsForSystem = system: nixpkgs-stable.legacyPackages.${system};
+          mkPkgsForSystem = system: nixpkgs.legacyPackages.${system};
+          restrictDependenciesUnits.synergy = ["synergy"];
 
           export = {
             # TODO: expose some easier-to-read way of doing this

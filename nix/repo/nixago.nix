@@ -6,5 +6,5 @@
 }: let
   inherit (units.harmony.lib) nixago;
 in {
-  editorconfig = nixago.files.editorconfig data.dev.editorconfig pkgs;
+  editorconfig = nixago.files.editorconfig data.${pkgs.system}.dev.editorconfig pkgs;
 }

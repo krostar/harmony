@@ -9,7 +9,7 @@
     (nixago.make {
       inherit pkgs;
       file = nixago.files.editorconfig-checker;
-      data = data.ci.linters.lint-editorconfig;
+      data = data.${pkgs.system}.ci.linters.lint-editorconfig;
     })
     configFile
     ;

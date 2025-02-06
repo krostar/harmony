@@ -24,9 +24,8 @@ in
         treefmt
       ])
       ++ (with pkgs; [
-        alejandra
+        cue
         nix-diff
         nix-tree
-        cue
       ]);
   }

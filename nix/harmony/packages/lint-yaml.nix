@@ -9,7 +9,7 @@
     (nixago.make {
       inherit pkgs;
       file = nixago.files.yamllint;
-      data = data.ci.linters.lint-yaml.yamllint;
+      data = data.${pkgs.system}.ci.linters.lint-yaml.yamllint;
     })
     configFile
     ;

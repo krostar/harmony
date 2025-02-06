@@ -54,7 +54,11 @@
           deny = [
             {
               pkg = "github.com/stretchr/testify";
-              desc = "testing should be done using gotest.tools/v3/assert";
+              desc = "testing should be done using github.com/krostar/test";
+            }
+            {
+              pkg = "gotest.tools/v3/assert";
+              desc = "testing should be done using github.com/krostar/test";
             }
           ];
         };
@@ -149,12 +153,20 @@
           disabled = true;
         }
         {
+          name = "confusing-results";
+          disabled = true;
+        }
+        {
           name = "cyclomatic";
           disabled = true;
         }
         {
           name = "defer";
           arguments = [["call-chain" "loop" "recover" "immediate-recover" "return"]];
+        }
+        {
+          name = "empty-lines";
+          disabled = true;
         }
         {
           name = "file-header";

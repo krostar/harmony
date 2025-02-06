@@ -1,3 +1,7 @@
-{data, ...}: {
-  inherit (data.ci.linters) yamllint;
+{
+  data,
+  pkgs,
+  ...
+}: {
+  inherit (data.${pkgs.system}.ci.linters) yamllint;
 }

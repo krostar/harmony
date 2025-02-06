@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  config = data.ci.linters.lint-sh.${pkgs.system};
+  config = data.${pkgs.system}.ci.linters.lint-sh;
 in
   pkgs.writeShellApplication {
     name = "lint-sh";

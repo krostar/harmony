@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  config = data.ci.linters.lint-ghaction;
+  config = data.${pkgs.system}.ci.linters.lint-ghaction;
 in
   pkgs.writeShellApplication {
     name = "lint-ghaction";

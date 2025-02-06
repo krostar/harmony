@@ -1,17 +1,15 @@
 {
   data,
-  flake,
   pkgs,
   unit,
   ...
 }: let
-  inherit (flake.inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}) golangci-lint;
   inherit (unit.lib) nixago;
   inherit
     (nixago.make {
       inherit pkgs;
       file = nixago.files.golangci-lint;
-      data = data.ci.linters.golangci-lint;
+      data = data.${pkgs.system}.ci.linters.golangci-lint;
     })
     configFile
     ;
@@ -19,7 +17,7 @@ in
   pkgs.writeShellApplication {
     name = "lint-go";
 
-    runtimeInputs = [pkgs.govulncheck golangci-lint];
+    runtimeInputs = [pkgs.govulncheck pkgs.golangci-lint];
     checkPhase = "";
 
     text = ''
