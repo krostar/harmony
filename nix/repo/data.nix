@@ -10,7 +10,9 @@ in {
       lint-ghaction
       lint-go
       lint-nix
+      lint-renovate
       lint-yaml
+      renovate-diff
       treefmt
     ]);
     lint-nix.alejandra.exclude = builtins.map (f: "./${f}") alejandraSlowNixFiles;

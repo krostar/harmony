@@ -19,12 +19,15 @@ in
         lint-editorconfig
         lint-ghaction
         lint-nix
+        lint-renovate
         lint-sh
         lint-yaml
+        renovate-diff
         treefmt
       ])
       ++ (with pkgs; [
         cue
+        jq
         nix-diff
         nix-tree
       ]);

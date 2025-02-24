@@ -18,7 +18,6 @@ in
       (with units.harmony.packages; [
         lint-editorconfig
         lint-ghaction
-        lint-go
         lint-nix
         lint-renovate
         lint-sh
@@ -27,9 +26,6 @@ in
         treefmt
       ])
       ++ (with pkgs; [
-        go_1_23
-        gotools
-        govulncheck
         jq
         nix-diff
         nix-tree
