@@ -85,8 +85,8 @@
       sections = [
         "standard"
         "default"
-        "prefix(github.com/krostar/"
-        "dot"
+        "Prefix(github.com/krostar/)"
+        "localmodule"
       ];
     };
     goconst = {

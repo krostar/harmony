@@ -8,6 +8,7 @@
       enable = true;
       order = ["standard" "default" "Prefix(github.com/krostar/)" "localmodule"];
     };
+
     gofumpt = {
       enable = true;
       extra = true;
@@ -24,8 +25,8 @@
   };
   settings.formatter = {
     yamlfmt.options = ["-formatter" "include_document_start=true,trim_trailing_whitespace=true,retain_line_breaks_single=true"];
-    gci.priority = 2;
-    goimports.priority = 1;
-    gofumpt.priority = 3;
+    gci.priority = 1;
+    goimports.priority = 3;
+    gofumpt.priority = 2;
   };
 }

@@ -1,6 +1,7 @@
 { data, unit, ... }:
 { lib, ... }:
 {
+
   options.data = lib.attrsets.genAttrs (builtins.attrNames data) (_: {
     ci.linters.golangci-lint = lib.mkOption {
       type =
@@ -389,57 +390,59 @@
                           options = {
                             rules = lib.mkOption {
                               type = types.attrsOf (
-                                types.submodule {
-                                  options = {
-                                    list-mode = lib.mkOption {
-                                      type = types.nullOr (
-                                        types.enum [
-                                          "original"
-                                          "strict"
-                                          "lax"
-                                        ]
-                                      );
-                                      default = null;
-                                      description = "Used to determine the package matching priority";
-                                    };
+                                types.nullOr (
+                                  types.submodule {
+                                    options = {
+                                      list-mode = lib.mkOption {
+                                        type = types.nullOr (
+                                          types.enum [
+                                            "original"
+                                            "strict"
+                                            "lax"
+                                          ]
+                                        );
+                                        default = null;
+                                        description = "Used to determine the package matching priority";
+                                      };
 
-                                    files = lib.mkOption {
-                                      type = types.nullOr (types.listOf types.str);
-                                      default = null;
-                                      description = "List of file globs that will match this list of settings to compare against";
-                                    };
+                                      files = lib.mkOption {
+                                        type = types.nullOr (types.listOf types.str);
+                                        default = null;
+                                        description = "List of file globs that will match this list of settings to compare against";
+                                      };
 
-                                    allow = lib.mkOption {
-                                      type = types.nullOr (types.listOf types.str);
-                                      default = null;
-                                      description = "List of allowed packages";
-                                    };
+                                      allow = lib.mkOption {
+                                        type = types.nullOr (types.listOf types.str);
+                                        default = null;
+                                        description = "List of allowed packages";
+                                      };
 
-                                    deny = lib.mkOption {
-                                      type = types.nullOr (
-                                        types.listOf (
-                                          types.submodule {
-                                            options = {
-                                              desc = lib.mkOption {
-                                                type = types.nullOr types.str;
-                                                default = null;
-                                                description = "Description";
+                                      deny = lib.mkOption {
+                                        type = types.nullOr (
+                                          types.listOf (
+                                            types.submodule {
+                                              options = {
+                                                desc = lib.mkOption {
+                                                  type = types.nullOr types.str;
+                                                  default = null;
+                                                  description = "Description";
+                                                };
+
+                                                pkg = lib.mkOption {
+                                                  type = types.nullOr types.str;
+                                                  default = null;
+                                                  description = "Package";
+                                                };
                                               };
-
-                                              pkg = lib.mkOption {
-                                                type = types.nullOr types.str;
-                                                default = null;
-                                                description = "Package";
-                                              };
-                                            };
-                                          }
-                                        )
-                                      );
-                                      default = null;
-                                      description = "Packages that are not allowed where the value is a suggestion";
+                                            }
+                                          )
+                                        );
+                                        default = null;
+                                        description = "Packages that are not allowed where the value is a suggestion";
+                                      };
                                     };
-                                  };
-                                }
+                                  }
+                                )
                               );
                               default = null;
                               description = "Rules to apply";
